@@ -1,7 +1,7 @@
 <h2 align="center">
   <b>DecomVoxel: Harnessing 3D-Native Priors with Guided In-situ Denoising Optimization for Decompositional Scene Reconstruction</b>
   <br>
-  <small><b><i>SIGGRAPH Asia 2025 - Journal Track (TOG)</i></b></small>
+  <small><b><i>SIGGRAPH Asia 2026 - Journal Track (TOG)</i></b></small>
 </h2>
 
 <p align="center">
