@@ -1,0 +1,74 @@
+name: geosvr
+
+### Used to specify CUDA version temporarily.
+# export CPATH=/usr/local/cuda-11.7/targets/x86_64-linux/include:$CPATH
+# export LD_LIBRARY_PATH=/usr/local/cuda-11.7/targets/x86_64-linux/lib:$LD_LIBRARY_PATH
+# export PATH=/usr/local/cuda-11.7/bin:$PATH
+# export CUDA_HOME=/usr/local/cuda-11.7/
+
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip=24.2
+  - pytorch==1.13.1
+  - torchvision==0.14.1
+  - torchaudio==0.13.1
+  - pytorch-cuda=11.7
+  - mkl==2023.1.0
+  - numpy==1.26.3
+  - pip:
+      - einops
+      - opencv-python
+
+      - yacs
+      - tqdm
+      - natsort
+      - argparse
+      - pillow
+      - imageio
+      - imageio-ffmpeg
+      - scikit-image
+
+      - plyfile
+      - shapely
+      - trimesh==4.0.4
+      - open3d==0.18.0
+      - gpytoolbox
+
+      - transformers==4.49.0
+
+      - lpips
+      - pytorch-msssim
+      - git+https://github.com/rahul-goel/fused-ssim.git@3006269823fc28110ba44686a172cbd59ec01bc3
+
+
+### Below are the pip requirements.txt.
+
+# numpy==1.26.3
+# einops
+# opencv-python
+
+# yacs
+# tqdm
+# natsort
+# argparse
+# pillow
+# imageio
+# imageio-ffmpeg
+# scikit-image
+
+# plyfile
+# shapely
+# trimesh==4.0.4
+# open3d==0.18.0
+# gpytoolbox
+
+# transformers==4.49.0
+
+# lpips
+# pytorch-msssim
+# git+https://github.com/rahul-goel/fused-ssim.git@3006269823fc28110ba44686a172cbd59ec01bc3

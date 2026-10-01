@@ -1,0 +1,64 @@
+# Copyright (c) 2024, NVIDIA CORPORATION.  All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto.  Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+
+# See `src/config.py` for the base setup.
+model:
+  vox_geo_mode: triinterp1 
+  # triinterp3 for better NVS
+  
+procedure:
+  # ## For better NVS
+  # prune_from: 6000
+  # prune_every: 2000
+  # prune_until: 18000
+  # prune_thres_init: 0.00001
+  # prune_thres_final: 0.005
+
+  ## For better mesh
+  prune_from: 1000
+  prune_every: 1000
+  prune_until: 18000
+  prune_thres_init: 0.0001
+  prune_thres_final: 0.05
+data:
+  eval: True
+
+regularizer:
+  use_l1: True
+  lambda_photo: 0.2 # 0.5 for better NVS
+  lambda_ssim: 0.02
+  
+  lambda_T_inside: 0.01
+
+  lambda_normal_dmean: 0.001
+  lambda_normal_dmed: 0.001
+  lambda_normal_dmono: 0.001
+
+  rectifiy_from: 5000
+  lambda_rectify: 0.00001
+
+  scaling_penalty_from: 1000
+  lambda_scaling_penalty: 1e-6
+
+  lambda_depthanythingv2: 0.1
+  depthanythingv2_end_mult: 0.05
+  depthanythingv2_from: 1000
+  depthanythingv2_end: 20000
+
+  power_level_uncertainty: 1.0 # 0.2 for better NVS
+
+  voxel_dropout_min: 1.0
+
+  W_enlarge_from: 3000
+
+  multi_view_patch_size: 2
+  multi_view_anneal_scale: 1.0
+  multi_view_weight_from_iter: 10000
+  multi_view_ncc_weight: 0.015
+  multi_view_geo_weight: 0.003
+  multi_view_interval: 3

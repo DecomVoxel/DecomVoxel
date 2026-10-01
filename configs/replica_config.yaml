@@ -1,0 +1,160 @@
+img_model: Seedream # Seedream (recommended), GPTImage2, NanoBanana
+sds:
+  rotate_initial_structure: false
+  rotation_angle_z: 0.0
+  total_iters: 5000
+  lr: 0.03 
+  noise_start: 0.02
+  noise_end: 0.98
+  weighting_strategy: "uniform"
+
+  sds_weight: 1.0
+  mask_weight: 2.0 
+  mask_weight_schedule: "cos_power"
+  mask_poly_power: 2.0  
+  mask_exp_gamma: 5.0   
+  mask_end_iter: 3000 
+
+  cfg_strength: 3.0 
+  timestep_schedule: "linear" 
+  linear_anneal_iter: 4000  
+  warmup_iters: 4000 
+  warmup_t_min: 0.8 
+  
+  print_interval: 5000 
+  save_interval: 5000
+  sds_loss_type: 'classic'
+  refine_enabled: false
+  use_rescaled_t: false
+  rescale_t: 3.0
+  init_noise_scale: 1.0  
+  empty_init_value: 0.2 
+
+  use_periodic_prune: true 
+  prune_interval: 300 
+  prune_start_iter: 0 
+  prune_end_iter: 2110 
+  prune_strength: 0.7 
+  prune_empty_logit: -7.0  
+  prune_mode: "redistribute"            
+  prune_redistribute_mean_factor: 0.2   
+  prune_redistribute_uniform_range: 2.0  
+  prune_redistribute_schedule: "cosine"  
+  prune_redistribute_poly_power: 2.0    
+  prune_redistribute_exp_gamma: 5.0      
+
+
+
+  # To be deleted
+  # Blank Region Preservation Loss:
+  # Penalizes the model for activating voxels that were empty at initialisation.
+  use_blank_region_loss: false
+  blank_region_weight: 0.05       # Overall scalar weight for this loss term
+  blank_region_weight_schedule: "cos_power"  # "const","linear","cosine","cos_power","poly","exponential","logarithmic"
+  blank_region_poly_power: 2.0   # Exponent for "poly" / "cos_power" schedules
+  blank_region_exp_gamma: 5.0    # Decay rate for "exponential" schedule
+  blank_region_end_iter: 3000      # Iteration after which blank loss is forced to 0 (-1 = use total_iters)
+
+  use_sds_x_pred_schedule: false
+  use_known_region_sampling_loss: false
+  known_region_sampling_weight: 3.0
+  sampling_weight_schedule: "cosine"  # Schedule for known_region_sampling_weight: "const", "linear", "cosine", "poly", "exponential", "logarithmic", "cos_power"
+  sampling_poly_power: 2.0
+  sampling_exp_gamma: 5.0
+  sampling_end_iter: 3000  # Iteration after which sampling loss weight is forced to 0 (-1 = use total_iters)
+
+  # TV regularization: suppress high-frequency noise while preserving gradients
+  use_tv_loss: false
+  tv_weight: 0.005  # 0.0001~0.01, increase if too noisy
+
+  # Entropy regularization: gently push toward binary in late stage only
+  use_entropy_loss: false
+  entropy_weight: 1e-5  # Very small to avoid killing completion gradients
+  entropy_start_ratio: 0.6  # Only activate after 60% of training
+
+  # Periodic smoothing: apply 3D Gaussian blur or median filter every N iters to suppress isolated noise
+  use_periodic_smooth: false
+  smooth_interval: 500  # Apply every N iterations
+  smooth_method: 'gaussian'  # 'gaussian' or 'median'
+  smooth_sigma: 0.7  # Gaussian sigma (small = mild, large = aggressive)
+  smooth_kernel_size: 5  # Median filter kernel size (odd number)
+  smooth_strength: 0.5  # Blend factor: 0=no effect, 1=full replace
+  smooth_start_ratio: 0.1  # Only start after 10% of training
+  smooth_preserve_known: true  # Don't smooth known (occupied) voxels
+
+  # Distance-decay prior loss: penalize voxels that are far from the initial known structure.
+  # Encourages the optimizer to complete structure near existing occupied regions.
+  # Weight map = 1 - Gaussian_proximity(sigma), so distant voxels incur higher penalty.
+  use_dist_decay_loss: false
+  dist_decay_weight: 0.01  # Overall loss weight
+  dist_decay_sigma: 5.0    # Decay length scale in voxels (larger = allow farther completion)
+  dist_decay_on_known: false  # If true, also penalize known (already occupied) voxels
+
+  # Boundary penalty loss: penalize voxels near the spatial boundary of the 3D grid.
+  # Prevents spurious occupancy at grid edges which are almost never part of real objects.
+  # Weight map is Gaussian-shaped with peak=1 at borders, falling off over boundary_margin voxels.
+  use_boundary_loss: false
+  boundary_weight: 0.01   # Overall loss weight
+  boundary_margin: 4      # Width (in voxels) of the penalized boundary band
+  boundary_sigma: 2.0     # Gaussian falloff sigma inside the boundary band (softer edge)
+
+  # Periodic local smoothing: uncertainty-adaptive smoothing based on accumulated x0_pred density
+  # Each iter accumulates x0_pred in latent space. At smoothing time, decode the average to get
+  # a per-voxel density estimate. Low density → uncertain → stronger local smoothing.
+  use_periodic_local_smooth: false
+  local_smooth_interval: 500  # Apply every N iterations
+  local_smooth_method: 'gaussian'  # 'gaussian' or 'median' for smoothing ss_param
+  local_smooth_sigma: 0.5  # Gaussian sigma for smoothing ss_param
+  local_smooth_kernel_size: 3  # Kernel size for median filter (odd number)
+  local_smooth_density_sigma: 2.0  # Sigma for heavy smoothing of the density map (higher = smoother uncertainty)
+  local_smooth_max_strength: 0.3  # Max blend factor at low-density (uncertain) voxels
+  local_smooth_min_strength: 0.05  # Min blend factor at high-density (confident) voxels
+  local_smooth_start_ratio: 0.5  # Only start after this fraction of training
+  local_smooth_end_ratio: 0.7  # Stop after this fraction of training (1.0 = no early stop)
+  local_smooth_preserve_known: false  # Don't smooth known (occupied) voxels
+  local_smooth_accum_decay: 0.5  # EMA decay for accumulator (0 = simple average, >0 = recent iters weighted higher)
+
+  use_rendering_loss: false
+  rendering_loss_weight: 0.01
+  rendering_source_path: datasets/Replica/scan2
+  rendering_obj_id: 8       # original_id from segm_3d
+  rendering_interval: 5
+  rendering_depth_loss_type: l1
+
+  # Blank-region noise fill: re-inject noise into certainly-blank voxels after pruning
+  # to keep them explorable. Noise std = max(logit_std_in_mask, blank_noise_min_scale) * blank_noise_scale.
+  use_blank_noise_fill: false
+  blank_noise_start_iter: 2000   # First iteration (inclusive)
+  blank_noise_end_iter: 2600     # Last  iteration (-1 = total_iters)
+  blank_noise_interval: 500      # Apply every N iterations
+  blank_noise_scale: 1.0         # Multiplier on computed logit std within the mask
+  blank_noise_min_scale: 0.5     # Minimum noise std (logit space; fallback after hard prune sets std≈0)
+
+
+
+appearance:
+  total_iters: 3000
+  lr: 0.01
+  cfg_strength: 3.0
+  cfg_interval_lo: 0.5
+  cfg_interval_hi: 1.0
+  noise_start: 0.02
+  noise_end: 0.98
+  weighting_strategy: "snr"
+  print_interval: 5000
+  save_interval: 5000   
+  use_non_zero_init: true
+  non_zero_init_k: 8
+  timestep_schedule: "linear"  
+  linear_anneal_iter: 2000         
+  use_rescaled_t: false
+  rescale_t: 0.0
+
+  use_certainty_mask_loss: true
+  certainty_mask_weight: 2.0
+  certainty_mask_weight_schedule: "linear" 
+  certainty_mask_end_iter: -1
+  certainty_mask_poly_power: 2.0
+  certainty_mask_exp_gamma: 5.0
+  certainty_blur_sigma: 1.0
+  certainty_mask_power: 2.0

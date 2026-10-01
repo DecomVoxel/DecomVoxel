@@ -1,0 +1,80 @@
+# Copyright (c) 2024, NVIDIA CORPORATION.  All rights reserved.
+#
+# NVIDIA CORPORATION and its licensors retain all intellectual property
+# and proprietary rights in and to this software, related documentation
+# and any modifications thereto.  Any use, reproduction, disclosure or
+# distribution of this software and related documentation without an express
+# license agreement from NVIDIA CORPORATION is strictly prohibited.
+
+# See `src/config.py` for the base setup.
+
+procedure:
+  prune_from: 8000
+  prune_every: 2000
+  prune_until: 18000
+  prune_thres_init: 0.00001
+  prune_thres_final: 0.001
+
+
+data:
+  eval: False
+  blend_mask: False
+  res_downscale: 2.0
+  ncc_scale: 0.5
+
+model:
+  outside_level: 1
+  vox_geo_mode: triinterp3
+  black_background: True
+  sh_degree: 2
+
+bounding:
+  bound_mode: pcd
+  pcd_density_rate: 0.01
+
+
+optimizer:
+  geo_lr: 0.05
+  lr_decay_ckpt: [18000]
+  # shs_lr: 0.001
+  # sh0_lr: 0.010
+  # shs_lr: 0.000125
+
+init:
+  sh_degree_init: 0
+
+regularizer:
+  use_l1: True
+  lambda_photo: 0.1
+
+  lambda_T_concen: 0.1
+  lambda_R_concen: 0.1
+  lambda_normal_dmean: 0.001
+  lambda_normal_dmed: 0.001
+  lambda_normal_dmono: 0.001
+
+  lambda_ascending: 0.01
+  
+  rectifiy_from: 5000
+  lambda_rectify: 0.00001
+
+  scaling_penalty_from: 1000
+  lambda_scaling_penalty: 5e-7
+  scaling_penalty_end: 16000
+
+  W_enlarge_from: 6000
+
+  lambda_depthanythingv2: 0.1
+  depthanythingv2_end_mult: 0.05
+  depthanythingv2_from: 1000
+  depthanythingv2_end: 20000
+
+  power_level_uncertainty: 1.0
+
+  voxel_dropout_min: 0.5
+
+  multi_view_patch_size: 2
+  multi_view_anneal_scale: 1.0
+  multi_view_weight_from_iter: 5000
+  multi_view_ncc_weight: 0.05
+  multi_view_geo_weight: 0.01
