@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <a href="">
+  <a href="https://arxiv.org/abs/2610.01914">
     <img src='https://img.shields.io/badge/Paper-arXiv-red?style=plastic&logo=adobeacrobatreader&logoColor=red' alt='Paper arXiv'>
   </a>
   <a href="https://decomvoxel.github.io/DecomVoxel-Webpage/">
